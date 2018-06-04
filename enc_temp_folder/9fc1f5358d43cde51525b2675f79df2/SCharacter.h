@@ -42,9 +42,6 @@ protected:
 
 	void EndCrouch();
 
-	// ----------- Lect 51: Adding a jump mechanic ----------------------
-	void BeginJump();
-
 
 public:	
 	// Called every frame

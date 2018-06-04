@@ -63,11 +63,6 @@ void ASCharacter::EndCrouch()
 	// already implemented in the engine
 	UnCrouch();
 }
-// Lec 51
-void ASCharacter::BeginJump()
-{
-	Jump();
-}
 
 
 // Called to bind functionality to input
@@ -89,8 +84,5 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	// Lect 50: Create binding actions for the crouching mechanics of the game based on player input
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ASCharacter::BeginCrouch);	// when crouch key pressed
 	PlayerInputComponent->BindAction("Crouch", IE_Released , this, &ASCharacter::EndCrouch);	// when crouch released
-
-	// Lec 51: adding a jump mechanism by binding an event action to the player input on keyward Jump using the ASCharacter class Jump() function found here http://api.unrealengine.com/INT/API/Runtime/Engine/GameFramework/ACharacter/index.html
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ASCharacter::BeginJump);
 }
 
