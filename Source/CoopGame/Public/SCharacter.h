@@ -6,6 +6,11 @@
 #include "GameFramework/Character.h"
 #include "SCharacter.generated.h"
 
+
+// forward declare cameracomp class
+class UCameraComponent;
+class USpringArmComponent;
+
 UCLASS()
 class COOPGAME_API ASCharacter : public ACharacter
 {
@@ -22,6 +27,20 @@ protected:
 
 	void MoveForward(float value);
 	void MoveSideways(float value);
+
+	// ------------------ Lect 47: Adding camera component -----------------------------
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCameraComponent* CameraComp;
+
+	// ------------- Lect 48: Adding spring arm component to cam create the camera component -----------
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USpringArmComponent* SpringArmComp;
+
+	// ------------ Lect 50: Adding animations to player. ---------------------
+		// creating functions for crouching
+	void BeginCrouch();
+
+	void EndCrouch();
 
 
 public:	
