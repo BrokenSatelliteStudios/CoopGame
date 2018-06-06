@@ -7,12 +7,17 @@
 #include "Components/SkeletalMeshComponent.h"		// Lect 55
 #include "Particles/ParticleSystemComponent.h"		// Lect 61
 
+// ----------- Lect 66: Creating a console variable to handle debugging -----------
+static int32 DebugWeaponDrawing = 0;
+FAutoConsoleVariableRef CVARDebugWeaponDrawing(
+	TEXT("COOP.DebugWeapons"), 
+	DebugWeaponDrawing, 
+	TEXT("Draw Debug Lines for Weapons."), 
+	ECVF_Cheat);
+
 // Sets default values
 ASWeapon::ASWeapon()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	// ------------------- Lect 55: Create the skeletal mesh for weapon -------------------
 
 	MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
@@ -27,13 +32,6 @@ ASWeapon::ASWeapon()
 
 	// --------------------- Lect 61 --------------------
 	TracerTargetName = "Target";	// this is already in the editor, but we do it by code anyways
-}
-
-// Called when the game starts or when spawned
-void ASWeapon::BeginPlay()
-{
-	Super::BeginPlay();
-	
 }
 
 
@@ -110,9 +108,12 @@ void ASWeapon::Fire()
 			TracerEndPoint = Hit.ImpactPoint;
 		}
 
-		// Draw visible line cast line
-		DrawDebugLine(GetWorld(), EyeLocation, TraceEnd, FColor::White, false, 1.0f, 0, 1.0f);
-
+		// Draw visible line cast line	and show only if console varialbe set to show
+		if (DebugWeaponDrawing > 0)
+		{
+			DrawDebugLine(GetWorld(), EyeLocation, TraceEnd, FColor::White, false, 1.0f, 0, 1.0f);
+		}
+		
 		// ----------------- Lect 60: check to see MuzzleEffect was assigned and then play muzzle flas only if it was
 
 
@@ -145,10 +146,8 @@ void ASWeapon::Fire()
 	}
 }
 
-// Called every frame
-void ASWeapon::Tick(float DeltaTime)
+void ASWeapon::PlayFireEffects()
 {
-	Super::Tick(DeltaTime);
 
 }
 

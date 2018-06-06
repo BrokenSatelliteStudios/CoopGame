@@ -45,6 +45,18 @@ protected:
 	// ----------- Lect 51: Adding a jump mechanic ----------------------
 	void BeginJump();
 
+	// ----------- Lect 65: Adding ADS -------------
+	bool bWantsToZoom;
+	UPROPERTY(EditDefaultsOnly, Category = "Player")
+	float ZoomedFOV;	// Field of view to be set when ADS occurs
+	float DefaultFOV;	// Default field of view when game begins
+	UPROPERTY(EditDefaultsOnly, Category = "Player", meta = (ClampMin = 0.1, ClampMax = 100))
+	float ZoomInterpSpeed;
+	// ----------- Lect 65: Adding ADS -------------
+	void BeginZoom();
+	void EndZoom();
+
+
 
 public:	
 	// Called every frame

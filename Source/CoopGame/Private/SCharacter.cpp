@@ -23,6 +23,11 @@ ASCharacter::ASCharacter()
 	// -------- Lec 47 create the camera component -- use text macro to set name -----------
 	CameraComp = CreateAbstractDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SpringArmComp);
+
+
+	// ----------- Lect 65: Adding ADS ------------- binding action for ADS using right click
+	ZoomedFOV = 65.0f;
+	ZoomInterpSpeed = 20;
 }
 
 // Called when the game starts or when spawned
@@ -30,6 +35,8 @@ void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// ----------- Lect 65: Adding ADS -------------
+	DefaultFOV = CameraComp->FieldOfView;	// get field of view from start
 }
 
 // Called every frame
@@ -37,6 +44,15 @@ void ASCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+									// ----------- Lect 65: Adding ADS -------------
+
+		// sets CurrentFov to ZoomedFOV if bWantsToZoom is true, otherwise set to DefaultFOV
+	// we put the FOV update here so that we can interpolate it and smoothen it out with delta time
+	float TargetFOV = bWantsToZoom ? ZoomedFOV : DefaultFOV;
+	// interpolate
+	float NewFOV = FMath::FInterpTo(CameraComp->FieldOfView, TargetFOV, DeltaTime, ZoomInterpSpeed);
+
+	CameraComp->SetFieldOfView(NewFOV);
 }
 
 // Lect 45 adding movement
@@ -69,6 +85,17 @@ void ASCharacter::BeginJump()
 	Jump();
 }
 
+// ----------- Lect 65: Adding ADS ------------- binding action for ADS using right click
+void ASCharacter::BeginZoom()
+{
+	bWantsToZoom = true;
+}
+// ----------- Lect 65: Adding ADS ------------- binding action for ADS using right click
+void ASCharacter::EndZoom()
+{
+	bWantsToZoom = false;
+}
+
 
 // Called to bind functionality to input
 void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -92,6 +119,11 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	// Lec 51: adding a jump mechanism by binding an event action to the player input on keyward Jump using the ASCharacter class Jump() function found here http://api.unrealengine.com/INT/API/Runtime/Engine/GameFramework/ACharacter/index.html
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ASCharacter::BeginJump);
+
+
+	// ----------- Lect 65: Adding ADS ------------- binding action for ADS using right click
+	PlayerInputComponent->BindAction("Zoom", IE_Pressed, this, &ASCharacter::BeginZoom);
+	PlayerInputComponent->BindAction("Zoom", IE_Released, this, &ASCharacter::EndZoom);
 }
 
 FVector ASCharacter::GetPawnViewLocation() const

@@ -20,8 +20,6 @@ public:
 	ASWeapon();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	// ------------------ Lect 54: Setting up the weapon -------------------
 		// create weapon skeletal mesh component
@@ -32,7 +30,10 @@ protected:
 	// ---------------- Lect 56: Line Tracing for shooting ------------------
 		// Bound function so we can make it callable from blueprints.
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void Fire();
+	virtual void Fire();		// ----------- Lect 63 we made this function virtual so that we could override it from the derived class for projectiles
+
+	// ---------------- Lect 67: Cleaning up code adding modularity
+	void PlayFireEffects();
 
 
 	// ----------------- Lect 58: ------------------------
@@ -61,9 +62,5 @@ protected:
 	FName TracerTargetName;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	
 	
 };
