@@ -54,5 +54,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	
-	
+	// ------------ Lect 57: Setting line trace from camera as eyePosition ----------------
+		// this function is provided by urneal engine in the pawn class. Our camera is a pawn so we use this
+	virtual FVector GetPawnViewLocation() const override;
 };

@@ -94,3 +94,17 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ASCharacter::BeginJump);
 }
 
+FVector ASCharacter::GetPawnViewLocation() const
+{
+	// dont need base implementation of this function so we dont call super
+	
+	// check if there is a camera and if so return it
+	if (CameraComp)
+	{
+		return CameraComp->GetComponentLocation();	// return the location of the camera component
+	}
+
+	// else call super and shoot from original location (actor head location) which is the base default implementation
+	return Super::GetPawnViewLocation();
+}
+
