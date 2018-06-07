@@ -114,40 +114,41 @@ void ASWeapon::Fire()
 			DrawDebugLine(GetWorld(), EyeLocation, TraceEnd, FColor::White, false, 1.0f, 0, 1.0f);
 		}
 		
-		// ----------------- Lect 60: check to see MuzzleEffect was assigned and then play muzzle flas only if it was
-
-
-		if (MuzzleEffect)
-		{
-			// ---------------------- Lect 60: Setting up muzzle flash particle effect -------------------------
-			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, /*Comp to attach to*/MeshComp, /*attach point name*/ MuzzleSocketName); // attached bc the muzzle will move and we want the particle effect to follow its movement
-		}
-
-
-		// ------------------ Lect 61: Smoke tracer particle effect -------------------
-			// check to make sure the TracerEffect was assigned from the blueprint.
-
-
-		if (TracerEffect)
-		{
-			FVector MuzzleLocation = MeshComp->GetSocketLocation(MuzzleSocketName);	// gets the location of the socket we set on the gun from the skeleton,
-			// we want this smoke trail effect to play even if our trace didnt hit anything
-				
-			// Create TracerComp to recieve the return value of the SpawnEmitterAtLocation function (happens at runtime)
-			UParticleSystemComponent* TracerComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TracerEffect, /*muzzle loc*/MuzzleLocation);
-
-			// specify the target for the trail
-			if (TracerComp)
-			{
-				TracerComp->SetVectorParameter(TracerTargetName, /*set loc*/ TracerEndPoint);	// param is TargetName found in smoke trail particle system in editor
-			}
-
-		}
+		// --------------- Lecture 67 : Have to pass in TracerEndPoint because of the scope in which its defined ------------------
+		PlayFireEffects(TracerEndPoint);
 	}
 }
 
-void ASWeapon::PlayFireEffects()
+void ASWeapon::PlayFireEffects(FVector TraceEnd)
 {
+	// ----------------- Lect 60: check to see MuzzleEffect was assigned and then play muzzle flas only if it was
 
+
+	if (MuzzleEffect)
+	{
+		// ---------------------- Lect 60: Setting up muzzle flash particle effect -------------------------
+		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, /*Comp to attach to*/MeshComp, /*attach point name*/ MuzzleSocketName); // attached bc the muzzle will move and we want the particle effect to follow its movement
+	}
+
+
+	// ------------------ Lect 61: Smoke tracer particle effect -------------------
+	// check to make sure the TracerEffect was assigned from the blueprint.
+
+
+	if (TracerEffect)
+	{
+		FVector MuzzleLocation = MeshComp->GetSocketLocation(MuzzleSocketName);	// gets the location of the socket we set on the gun from the skeleton,
+																				// we want this smoke trail effect to play even if our trace didnt hit anything
+
+																				// Create TracerComp to recieve the return value of the SpawnEmitterAtLocation function (happens at runtime)
+		UParticleSystemComponent* TracerComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TracerEffect, /*muzzle loc*/MuzzleLocation);
+
+		// specify the target for the trail
+		if (TracerComp)
+		{
+			TracerComp->SetVectorParameter(TracerTargetName, /*set loc*/ TraceEnd);	// param is TargetName found in smoke trail particle system in editor
+		}
+
+	}
 }
 

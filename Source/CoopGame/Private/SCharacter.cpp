@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "SWeapon.h" // Lecture 67
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -28,6 +29,9 @@ ASCharacter::ASCharacter()
 	// ----------- Lect 65: Adding ADS ------------- binding action for ADS using right click
 	ZoomedFOV = 65.0f;
 	ZoomInterpSpeed = 20;
+
+	// ------------------ Lect 67: Cleaning up code ----------------
+	WeaponAttachSocketName = "WeaponSocket";
 }
 
 // Called when the game starts or when spawned
@@ -37,6 +41,22 @@ void ASCharacter::BeginPlay()
 	
 	// ----------- Lect 65: Adding ADS -------------
 	DefaultFOV = CameraComp->FieldOfView;	// get field of view from start
+
+	// ----------- Lect 67: Cleaning up code -- Adding gun spawning at player hands functionality from non blueprint -------------
+
+	// Spawns the StarterWeaponClass at a location
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	CurrentWeapon = GetWorld()->SpawnActor<ASWeapon>(StarterWeaponClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+	if (CurrentWeapon)
+	{
+		//  *** set owner to player character. This is important otherwise the player cant actually use the gun
+		CurrentWeapon->SetOwner(this);
+		// attach current weapon to player mesh at the WeaponSocket we specified in the editor
+			// Must use GetMesh() to get the mesh of the player because even if we are in derived class from ACharacter we cant access it
+		CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponAttachSocketName);
+	}
 }
 
 // Called every frame
@@ -97,6 +117,16 @@ void ASCharacter::EndZoom()
 }
 
 
+// ------------- Lect 67: Code cleanup - adding code based fire mechanics -------------
+void ASCharacter::Fire()
+{
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->Fire();
+	}
+}
+
+
 // Called to bind functionality to input
 void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -124,6 +154,10 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	// ----------- Lect 65: Adding ADS ------------- binding action for ADS using right click
 	PlayerInputComponent->BindAction("Zoom", IE_Pressed, this, &ASCharacter::BeginZoom);
 	PlayerInputComponent->BindAction("Zoom", IE_Released, this, &ASCharacter::EndZoom);
+
+
+	// ----------- Lect 67: Cleaning code -- adding fire mechanics -- here we bind the event of fire to our pressing of fire
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ASCharacter::Fire);
 }
 
 FVector ASCharacter::GetPawnViewLocation() const
