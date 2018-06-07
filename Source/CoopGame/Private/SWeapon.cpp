@@ -150,5 +150,20 @@ void ASWeapon::PlayFireEffects(FVector TraceEnd)
 		}
 
 	}
+
+	// ---------------------------------- Lect 68: Adding Camera Shake ------------------------------------------
+		// The camera shake function is already built into UE4's PlayerController Class
+		// Our player pawn has a reference to the PlayerController class so this is how we get the reference to it
+	// Cast MyOwner Actor to a pawn
+	APawn* MyOwner = Cast<APawn>(GetOwner());
+	if (MyOwner)
+	{
+		// cast our pawn to PlayerController type
+		APlayerController* PC = Cast<APlayerController>(MyOwner->GetController());
+		if (PC)
+		{
+			PC->ClientPlayCameraShake(FireCamShake);
+		}
+	}
 }
 

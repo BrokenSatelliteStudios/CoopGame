@@ -56,6 +56,12 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FName TracerTargetName;
 
+	// -------------------- Lect 68: Adding Camera Shake -----------------
+	// This subclass is needed for the camera shake function
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<UCameraShake> FireCamShake;
+
+
 public:	
 	// moved the Fire function here during lecture 67
 	// ---------------- Lect 56: Line Tracing for shooting ------------------
